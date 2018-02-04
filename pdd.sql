@@ -62,13 +62,14 @@ CREATE TABLE `city` (
 -- Структура таблицы `comments`
 --
 
-CREATE TABLE `comments` (
+CREATE TABLE IF NOT EXISTS `comments` (
   `id` int(11) NOT NULL,
   `text_comment` text NOT NULL,
   `user_id` int(11) NOT NULL,
   `questions_id` int(11) NOT NULL,
-  `date_add` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `date_add` varchar(255) NOT NULL,
+  `ip` varchar(256) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
