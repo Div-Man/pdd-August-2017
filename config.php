@@ -6,4 +6,8 @@ return [
 		'user' => 'root',
 		'pass' => '',
 	]
+<<<<<<< HEAD
 ];
+=======
+];
+>>>>>>> upstream/master
