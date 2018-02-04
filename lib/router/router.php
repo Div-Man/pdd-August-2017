@@ -87,12 +87,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		
 	}
 	
+	if(!empty($_POST['userCreateCity'])) {
+		if(!empty($_POST['createCity']) && !empty($_POST['createStreet'])) {
+			$question->newCity($_POST['createCity'], $_POST['createStreet']);
+			
+		}
+		
+		else {
+			die('<p>Введите город и улицу</p>');
+		}
+	}
+	
 	if(!empty($_POST['add-comment'])) {
-		$question->getAddUserComment($_POST['user-comment'], $_SESSION['userPdd'], $_GET['comments']);
+		$question->getAddUserComment($_POST['user-comment'], $_SESSION['userPdd'], $_GET['comments'], $_SERVER['REMOTE_ADDR']);
 	}
 	
 	if(!empty($_POST['callAdmin'])) {
 		$user->getCallAdmin($_POST['callName'], $_POST['callEmail'], $_POST['messageForAdmin']);
+	}
+	
+	else {
+		$s = file_get_contents('http://ulogin.ru/token.php?token=' . $_POST['token'] . '&host=' . $_SERVER['HTTP_HOST']);
+         $user = json_decode($s, true);
+		 
+          //$user['network'] - соц. сеть, через которую авторизовался пользователь
+          //$user['identity'] - уникальная строка определяющая конкретного пользователя соц. сети
+		//$user['first_name'] - имя пользователя
+          //$user['last_name'] - фамилия пользователя
 	}
 	
 }

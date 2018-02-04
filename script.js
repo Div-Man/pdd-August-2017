@@ -12,10 +12,13 @@ var footer = document.querySelector("footer");
 var body = document.querySelector("body");
 
 
+
+
 var linkForOpenMenu = document.querySelector(".open-submenu-user");
 var subenu = document.querySelector(".submenu-user");
 
-			
+var linkForOpenMenu2 = document.querySelector(".open-submenu-user2");
+var subenu2 = document.querySelector(".submenu-user2");
 			
 			
 function showHide(showElement) {
@@ -33,9 +36,8 @@ openVxod.addEventListener('click', function() {showHide(vxodik)});
 burger.addEventListener('click', function() {showHide(openBurger)});
 
 
-		
-			
-openVxod2.addEventListener('click', function() {
+if (openVxod2 != null ) {	
+	openVxod2.addEventListener('click', function() {
 			
 	if(vxodik2.style.display != 'block') {
 		content.style.display='none';
@@ -58,6 +60,11 @@ openVxod2.addEventListener('click', function() {
 });
 
 
+}
+
+	
+
+
 if (linkForOpenMenu != null ) {
    
    linkForOpenMenu.addEventListener('click', function(eee) {
@@ -66,3 +73,14 @@ if (linkForOpenMenu != null ) {
 	});
    
 }
+
+if (linkForOpenMenu2 != null ) {
+   
+   linkForOpenMenu2.addEventListener('click', function(eee) {
+			eee.preventDefault();
+			showHide(subenu2)
+	});
+   
+}
+
+

@@ -7,7 +7,7 @@ class Question {
 	}
 	
 	function showQuestion($user_id = null, $allCity = null) {
-		$num = 2;
+		$num = 10;
 		
 		if(!empty($_GET['page'])) {
 			$page = $_GET['page'];
@@ -342,196 +342,63 @@ class Question {
 		}
 		
 	}
-		
-	function addQuestionCreateCity($img, $question, $var1, $var2, $var3, $var4, $answer, $newCity, $newStreet) {
-		if($img['type'] == 'image/jpeg') {
-			$date = date('d.m.Y');
-		}
-				
-		else {
-			die('<p>Загрузите изображение, в формате jpeg</p>');
-		}
-		
-		try {
-			$sqlUser = "SELECT users.id, users.folder, users.reputation FROM users WHERE users.id = '".$_SESSION['id']."'";
-			$queryUser = $this->db->query($sqlUser);
-			$userArray = $queryUser->fetchAll();
-		}
-		catch (Exception $e) {
-			die('<p>Произошла неизвестная ошибка, повторите попытку или сообщите администратору.</p>');
-		}
 	
-	
-	
-	
-	try {
-		$sqlSearchCity = "SELECT `city_name`, `id` FROM city WHERE `city_name` = :newCity";
-		$searchCity = $this->db->prepare($sqlSearchCity);
-		$searchCity->bindValue(':newCity', trim($newCity), PDO::PARAM_STR);
-		$searchCity->execute();
+	function createNewCity($city, $street) {
 		
-		$res = $searchCity->fetchAll();
+		$matchingCity = "SELECT `id`, `city_name` FROM city WHERE `city_name` = :c";
+		$matchingCityPrepare = $this->db->prepare($matchingCity);
+		$matchingCityPrepare->bindValue(':c', trim($city), PDO::PARAM_STR);
+		$matchingCityPrepare->execute();
+		$resCity = $matchingCityPrepare->fetchAll();
 		
-		if(count($res) > 0) { //если город уже есть
-			$sqlSearchStreet = "SELECT `id`, `city_id` FROM street WHERE `street_name` = :newStreet";
-			$searchStreet = $this->db->prepare($sqlSearchStreet);
-			$searchStreet->bindValue(':newStreet', trim($newStreet), PDO::PARAM_STR);
-			$searchStreet->execute();
+		
+		if(count($resCity) < 1) {
+			$sqlNewCity = "INSERT INTO city (`city_name`) VALUES (:createCity)";
+			$newCityPrepare = $this->db->prepare($sqlNewCity);
+			$newCityPrepare->bindValue(':createCity', trim($city), PDO::PARAM_STR);
+			$newCityPrepare->execute();
 			
-			$resStreet = $searchStreet->fetchAll();
+			$matchingCity2 = "SELECT `id`, `city_name` FROM city WHERE `city_name` = :c";
+			$matchingCityPrepare2 = $this->db->prepare($matchingCity2);
+			$matchingCityPrepare2->bindValue(':c', trim($city), PDO::PARAM_STR);
+			$matchingCityPrepare2->execute();
+			$resCity2 = $matchingCityPrepare2->fetchAll();
 			
-			if(count($resStreet) > 0) { //если улица уже есть
-				echo '<p>Вы создаёте улицу, которая уже есть, выберите её из списка</p>';
+			$sqlNewStreet = "INSERT INTO street (`street_name`, `city_id`) VALUES (:street, :idcity)";
+			$newStreetPrepare = $this->db->prepare($sqlNewStreet);
+			$newStreetPrepare->bindValue(':street', trim($street), PDO::PARAM_STR);
+			$newStreetPrepare->bindValue(':idcity', trim($resCity2[0]['id']), PDO::PARAM_INT);
+			$newStreetPrepare->execute();
+			header('Location: /?action=add-question&token='.$_SESSION['userPdd']);
+		}
+		
+		elseif(count($resCity) > 0) {
+		
+			$matchingStreet = "SELECT `id`, `street_name` FROM street WHERE `street_name` = :s AND `city_id` = '".$resCity[0]['id']."'";
+			$matchingStreetPrepare = $this->db->prepare($matchingStreet);
+			$matchingStreetPrepare->bindValue(':s', trim($street), PDO::PARAM_STR);
+			$matchingStreetPrepare->execute();
+			$resStreet = $matchingStreetPrepare->fetchAll();
+			
+			if(count($resCity) > 0 && count($resStreet) > 0) {
+				die('<p>Такая улица в таком городе уже существует</p>');
 			}
 			
-			else {
-				try {
-					$sqlNewStreet = "INSERT street (street_name, city_id) VALUES (:street, :id_city)";
-					$newStreetPrepare = $this->db->prepare($sqlNewStreet);
-					$newStreetPrepare->bindValue(':street', trim($newStreet), PDO::PARAM_STR);
-					$newStreetPrepare->bindValue(':id_city', trim($res[0]['id']), PDO::PARAM_INT);
-					$newStreetPrepare->execute();
-				}
-		
-				catch(PDOException $e){
-					die('<p>Произошла ошибка, при создании улицы, повторите попытку или обратитесь к администратору.</p>');
-				}
-				
-				$sqlSearchStreet = "SELECT `id`, `city_id` FROM street WHERE `street_name` = :newStreet";
-				$searchStreet = $this->db->prepare($sqlSearchStreet);
-				$searchStreet->bindValue(':newStreet', trim($newStreet), PDO::PARAM_STR);
-				$searchStreet->execute();
-				
-				$resStreet = $searchStreet->fetchAll();
-			
-				$questionImg = "./userFile/".$_SESSION['userPdd']. "/question/" . $date . "/" . basename($img['name']);
-				
-				$this->loadImg($img);
-			
-				try {
-					$sqlNewQuestion = "INSERT questions (`question_name`, `answer`, `variant1`, `variant2`, `variant3`, `variant4`,`user_id`, `city_id`, `street_id`, `date`, `img` ) VALUES (:question, :answer, :var1, :var2, :var3, :var4, :user_id, :city_id, :street_id, '".$date."', '".$questionImg."')";
-						
-					$newQystionPrepare = $this->db->prepare($sqlNewQuestion);
-					$newQystionPrepare->bindValue(':question', trim($question), PDO::PARAM_STR);
-					$newQystionPrepare->bindValue(':answer', trim($answer), PDO::PARAM_INT);
-					$newQystionPrepare->bindValue(':var1', trim($var1), PDO::PARAM_STR);
-					$newQystionPrepare->bindValue(':var2', trim($var2), PDO::PARAM_STR);
-					$newQystionPrepare->bindValue(':var3', trim($var3), PDO::PARAM_STR);
-					$newQystionPrepare->bindValue(':var4', trim($var4), PDO::PARAM_STR);
-					$newQystionPrepare->bindValue(':user_id', trim($userArray[0]['id']), PDO::PARAM_INT);
-					$newQystionPrepare->bindValue(':city_id', trim($res[0]['id']), PDO::PARAM_INT);
-					$newQystionPrepare->bindValue(':street_id', trim($resStreet[0]['id']), PDO::PARAM_INT);
-					$newQystionPrepare->execute();
-					
-					$oldRep = $userArray[0]['reputation'];
-					
-					$newRep = $oldRep+1;
-					
-					$reputationUser = 'UPDATE users SET reputation = ' . $newRep . ' WHERE id = ' . $userArray[0]['id'];
-					$this->db->query($reputationUser);
-					
-					$oldSesRep = $_SESSION['reputation'];
-					$newSesRep = $oldSesRep + 1;
-					$_SESSION['reputation'] = $newSesRep;
-					
-					header('Location: /?my-questions='.$_SESSION['userPdd']);
-				}
-		
-				catch(PDOException $e){
-					die('<p>Произошла ошибка, при создании вопроса, повторите попытку или обратитесь к администратору.</p>');
-				}
-			}
-			
-		}
-		else {
-			try {
-				$sqlNewCity = "INSERT city (city_name) VALUES (:city)";
-				$newCityPrepare = $this->db->prepare($sqlNewCity);
-				$newCityPrepare->bindValue(':city', trim($newCity), PDO::PARAM_STR);
-				$newCityPrepare->execute();
-			}
-		
-			catch(PDOException $e){
-				die('<p>Произошла ошибка, при создании города, повторите попытку или обратитесь к администратору.</p>');
-			}
-			
-			try {
-			
-				$sqlSearchCity = "SELECT `city_name`, `id` FROM city WHERE `city_name` = :newCity";
-				$searchCity = $this->db->prepare($sqlSearchCity);
-				$searchCity->bindValue(':newCity', trim($newCity), PDO::PARAM_STR);
-				$searchCity->execute();
-				
-				$res = $searchCity->fetchAll();
-				
-			
-				$sqlNewStreet = "INSERT street (street_name, city_id) VALUES (:street, :id_city)";
+			elseif(count($resCity) > 0 && count($resStreet) < 1) {
+				$sqlNewStreet = "INSERT INTO street (`street_name`, `city_id`) VALUES (:street, :idcity)";
 				$newStreetPrepare = $this->db->prepare($sqlNewStreet);
-				$newStreetPrepare->bindValue(':street', trim($newStreet), PDO::PARAM_STR);
-				$newStreetPrepare->bindValue(':id_city', trim($res[0]['id']), PDO::PARAM_INT);
+				$newStreetPrepare->bindValue(':street', trim($street), PDO::PARAM_STR);
+				$newStreetPrepare->bindValue(':idcity', trim($resCity[0]['id']), PDO::PARAM_INT);
 				$newStreetPrepare->execute();
-				
+			
+				header('Location: /?action=add-question&token='.$_SESSION['userPdd']);
 			}
-		
-			catch(PDOException $e){
-				die('<p>Произошла ошибка, при создании улицы, повторите попытку или обратитесь к администратору.</p>');
-			}
-			
-			$sqlSearchStreet = "SELECT `id`, `city_id` FROM street WHERE `street_name` = :newStreet";
-			$searchStreet = $this->db->prepare($sqlSearchStreet);
-			$searchStreet->bindValue(':newStreet', trim($newStreet), PDO::PARAM_STR);
-			$searchStreet->execute();
-			
-			$resStreet = $searchStreet->fetchAll();
-			
-			
-			$questionImg = "/userFile/".$_SESSION['userPdd']. "/question/" . $date . "/" . basename($img['name']);
-			
-			$this->loadImg($img);
-			
-			try {
-					$sqlNewQuestion = "INSERT questions (`question_name`, `answer`, `variant1`, `variant2`, `variant3`, `variant4`,`user_id`, `city_id`, `street_id`, `date`, `img` ) VALUES (:question, :answer, :var1, :var2, :var3, :var4, :user_id, :city_id, :street_id, '".$date."', '".$questionImg."')";
-					
-					$newQystionPrepare = $this->db->prepare($sqlNewQuestion);
-					$newQystionPrepare->bindValue(':question', trim($question), PDO::PARAM_STR);
-					$newQystionPrepare->bindValue(':answer', trim($answer), PDO::PARAM_INT);
-					$newQystionPrepare->bindValue(':var1', trim($var1), PDO::PARAM_STR);
-					$newQystionPrepare->bindValue(':var2', trim($var2), PDO::PARAM_STR);
-					$newQystionPrepare->bindValue(':var3', trim($var3), PDO::PARAM_STR);
-					$newQystionPrepare->bindValue(':var4', trim($var4), PDO::PARAM_STR);
-					$newQystionPrepare->bindValue(':user_id', trim($userArray[0]['id']), PDO::PARAM_INT);
-					$newQystionPrepare->bindValue(':city_id', trim($res[0]['id']), PDO::PARAM_INT);
-					$newQystionPrepare->bindValue(':street_id', trim($resStreet[0]['id']), PDO::PARAM_INT);
-					$newQystionPrepare->execute();
-					
-					$oldRep = $userArray[0]['reputation'];
-					
-					$newRep = $oldRep+1;
-					
-					$reputationUser = 'UPDATE users SET reputation = ' . $newRep . ' WHERE id = ' . $userArray[0]['id'];
-					$this->db->query($reputationUser);
-					
-					$oldSesRep = $_SESSION['reputation'];
-					$newSesRep = $oldSesRep + 1;
-					$_SESSION['reputation'] = $newSesRep;
-					
-					header('Location: /?my-questions='.$_SESSION['userPdd']);
-					
-				
-			}
-		
-			catch(PDOException $e){
-				die('<p>Произошла ошибка, при создании вопроса, повторите попытку или обратитесь к администратору.</p>');
-			}
-			
 		}
 		
 	}
-	catch(PDOException $e){
-		die('<p>Произошла ошибка, при создании города, повторите попытку или обратитесь к администратору.</p>');
-	}
-	
-	}
+		
+		
+		
 	
 	
 	function redactQuestion($idQuestion, $token, $idUser) {
@@ -566,10 +433,10 @@ class Question {
 		$res = $resultAnswer[0]['answer'];
 				
 		if($res == $a) {
-			echo '<p>Правильно</p>';
+			echo '<p class="green-answer">Правильно</p>';
 		}
 		else {
-			echo '<p>Не правильно</p>';
+			echo '<p class="red-answer">Не правильно</p>';
 		}
 		die();
 
@@ -640,12 +507,23 @@ class Question {
 			$newSesRep = $oldSesRep - 1;
 			$_SESSION['reputation'] = $newSesRep;
 		
-			echo 'Удалено';
+			echo '<p class="del-question">Удалено</p>';
 		}
 	}
 	
 	
+	function commmmm($idQuestion) {
+		$needComment = "SELECT id FROM questions WHERE id = '" .$idQuestion . "'";
+		$queryCom = $this->db->query($needComment);
+		$res = $queryCom->fetchAll();
+		if(empty($res)) {
+			header("Location: /");
+		}
+	}
+	
 	function userComments($idQuestion) {
+	
+
 		$sql = "SELECT 
 		questions.id, 
 		questions.question_name, 
@@ -690,21 +568,31 @@ class Question {
 		$userName = explode('.', $login)[0];
 		$userId = explode('.', $login)[1];
 		
-		$sql ="SELECT users.login, users.avatar, users.link_vk, data_reg, COUNT(*) AS `count` FROM users INNER JOIN `questions` WHERE questions.user_id = ".$userId." AND questions.user_id = users.id";
+		$searchUser = "SELECT id FROM users WHERE login = '".$userName. "' AND id = '" .$userId. "'";
+		$resSearchUser = $this->db->query($searchUser);
+		$res2 = $resSearchUser->fetchAll();
 		
-		$query = $this->db->query($sql);
-		return $query->fetchAll();
+		if(empty($res2)) {
+			header("Location: /");
+		}
+		else {
+			$sql ="SELECT users.login, users.avatar, users.link_vk, data_reg, COUNT(*) AS `count` FROM users INNER JOIN `questions` WHERE questions.user_id = ".$userId." AND questions.user_id = users.id";
+		
+			$query = $this->db->query($sql);
+			return $query->fetchAll();
+		}
+		
 	}
 	
-	function addUserComment($comment, $user, $idQuestion) {
+	function addUserComment($comment, $user, $idQuestion, $ip) {
 		$date = date('d.m.Y.g.16');
 		
 		$findUserId = "SELECT id FROM users WHERE login='".$user."'";
 		$query = $this->db->query($findUserId);
 		$userId = $query->fetchAll()[0]['id'];
 		
-		$sql = "INSERT INTO comments(`text_comment`, `user_id`, `questions_id`, `date_add`) 
-									VALUES(:text, '".$userId."', '".$idQuestion."', '".$date."')";
+		$sql = "INSERT INTO comments(`text_comment`, `user_id`, `questions_id`, `date_add`, `ip`) 
+									VALUES(:text, '".$userId."', '".$idQuestion."', '".$date."', '".$ip."')";
 		$newComment = $this->db->prepare($sql);							
 		
 		$newComment->bindValue(':text', trim($comment), PDO::PARAM_STR);
@@ -754,7 +642,7 @@ class Question {
 		$res = $bookmark->fetchAll();
 		
 		if(count($res) == 0) {
-			die('Ошибка удаления');
+			die('<p class="del-question">Ошибка удаления</p>');
 		}
 		
 		else {
@@ -765,20 +653,20 @@ class Question {
 			
 			$delBookmark->execute();
 			
-			echo 'Удалено';
+			echo '<p class="del-question">Удалено</p>';
 		}
 		
 	}
 	
 	function allCity() {
-		$sql = "SELECT `id`, `city_name` FROM city";
+		$sql = "SELECT `id`, `city_name` FROM city ORDER BY city_name";
 		$query = $this->db->query($sql);
 		return $query->fetchAll();
 		
 	}
 	
 	function allStreet($id) {
-		$sql = "SELECT `id`, `street_name` FROM street WHERE city_id ='".$id."'";
+		$sql = "SELECT `id`, `street_name` FROM street WHERE city_id ='".$id."' ORDER BY street_name";
 		$query = $this->db->query($sql);
 		$res = $query->fetchAll();
 		

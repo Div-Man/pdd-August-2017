@@ -3,49 +3,72 @@
 		header('Location: ./index.php');
 	}
 ?>
-
-<div class="all-city">
-						<p>Редактирование профиля</p>
+					
+		<div class="red-profil">
+			<p class="new-questions">Редактирование профиля</p>
+			
+			<div class="info-user">
+				<form method="POST" enctype="multipart/form-data" class="clearfix">
+					<div class="add-ava">
+						<div class="info-user-img">
+							<img src="<?php echo $_SESSION['avatar'];?>" class="img-circle2" id="theImage2" alt="">
+							<input type="file" id="photoInput2" name="profil-img">
+							<button class="addImg2">Добавить фото</button>
+						</div>
 					</div>
-					<div class="edit-user-profil">
-						<form method="POST" enctype="multipart/form-data">
-							<div class="user-avatar-profil">
-							Аватар
-								<p>
-								<input type="file" id="userImg" name="profil-img">
-								<div>
-									<img src="" class="img-circle" id="theImage">
-								</div>
-								</p>
+					
+					<div class="data-link-vk-right">
+						<div class="data-link-vk">
+							<div class="ico-chooce">
+								<span class="ico-city ico-data"></span>
+								<span class="title-choce">Дата регистрации</span>
 							</div>
-							<div class="data-reg">
-								Дата регистрации: <strong><?php echo $_SESSION['dateReg']; ?> </strong>
+							<p class="data-reg"><?php echo $_SESSION['dateReg']; ?> </p>
+						</div>
+						<div class="data-link-vk">
+							<div class="ico-chooce">
+								<span class="ico-city ico-vk"></span>
+								<span class="title-choce">Ссылка вконтакте</span>
 							</div>
-							<br>
-							<div class="user-vkontakte">
-								<label>Ссылка вконтакте <input type="text" class="link-vk" name="link-vk" value="<?php if(!empty($_SESSION['vkontakte'])) {
-									echo $_SESSION['vkontakte'];
-								}
+							<p class="link-vk-p"><input type="text" class="link-vk" name="link-vk" value="<?php if(!empty($_SESSION['vkontakte'])) {
+								echo $_SESSION['vkontakte'];
+							}
 								else {
 									echo 'не указана';
 								}
-								?>"></label>
-							</div>
+							?>"> </p>
+						</div>
+						<br>
+						<div class="btn-save">
 							<input type="submit" value="Сохранить" name="editUserProfil">
-						</form>
-						
+						</div>
 					</div>
+				</form>
+			</div>
+					
+		</div>			
+					
+					
 					
 	<script>
-		var fileReader = new FileReader();
+		var btn = document.querySelector(".addImg2");
+			var photoFile = document.getElementById("photoInput2");
 
+			btn.addEventListener('click', function(e) {
+				e.preventDefault();
+				photoFile.click();
+			})
+
+			var fileReader = new FileReader();
+			
 			fileReader.addEventListener('load', function() {
-				theImage.src = this.result;
+				theImage2.src = this.result;
 			});
 
-			userImg.addEventListener('change', function(e) {
+			photoInput2.addEventListener('change', function(e) {
 				var file = e.target.files[0];
 
 				fileReader.readAsDataURL(file);
 			});
+			
 	</script>				

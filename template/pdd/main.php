@@ -1,47 +1,81 @@
+
 <!DOCTYPE html>
-<html>
-	<head>
-		<title>ПДД В моём городе</title>
-		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="normalize.css">
-		<link rel="stylesheet" type="text/css" href="style.css">
-	</head>
-	<body>
-		<!DOCTYPE html>
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
+		<meta name="yandex-verification" content="e37dc5698c4f5b46" />
 		<title>ПДД в моём городе</title>
+		 <link rel="shortcut icon" href="/img/logo.ico" type="image/x-icon">
 		<link rel="stylesheet" type="text/css" href="normalize.css">
 		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body>
+		
+		<?php
+			if(empty($_GET['reg-mobil'])) {
+				echo '
 		<div class="for-ramki hide-for-planshet-and-mobil">
 			<form method="POST" class="clearfix forma-for-planshet">
 				<div class="clearfix wrapper-for-login">
-					<p class="login"><span></span><input type="text" placeholder="Логин"></p>
-					<p class="password"><span></span><input type="password" placeholder="Пароль"></p>
+					<p class="login"><span></span><input type="text" placeholder="Логин" name="log"></p>
+					<p class="password"><span></span><input type="password" placeholder="Пароль" name="password"></p>
 				</div>
 				
 				<div class="btn-and-zapomnit clearfix">
-					<input class="btn-vxod" type="submit" value="войти">
+					<input class="btn-vxod auth2" type="submit" value="войти" name="auth">
 								
 					<label class="zapomnit">
-						<input id="my_check2" type="checkbox" />
+						<input id="my_check2" type="checkbox" name="rememberPass" value="0">
 						<label for="my_check2"><span>Запомнить</span></label>
 					</label>
 				</div>			
 			</form>
+			
+			<div id="wrongLogin2"></div>
+			
 			<div class="reg">
 				<p>
 					В первый раз на сайте?
 				</p>
-				<a href="#">Регистрация</a>
+				<a href="?reg-mobil=ok">Регистрация</a>
 			</div>		
 		</div>
 		
-		<header class="main-header">
+		
+		
+				';
+				
+		require_once 'auth-mobil.js';
+			}
+			
+			if(!empty($_GET['reg-mobil'])) {
+				require 'registr.php';
+				die();
+			}
+		?>
+	
+	
+		
+		
+		
+		
+		
+		
+		<?php
+			if(!empty($_GET['action'])) {
+				if($_GET['action'] == 'add-question' || $_GET['action'] == 'edit-user-profil') {
+					echo '<header class="main-header header2">';
+				}
+				else {
+					echo '<header class="main-header">';
+				}
+			}
+			else {
+				echo '<header class="main-header">';
+			}
+		?>
+	
 		<div class="nav-for-mobil clearfix">
 		
 			<div class="xleb-kolbasa-sir">
@@ -50,9 +84,9 @@
 			
 			<div class="top-menu hide-for-mobil">
 				<a href="/">Главная</a>
-				<a href="#">Город</a>
-				<a href="#">О сайте</a>
-				<a href="#">Обратная связь</a>
+					<a href="?choose-city=yes">Город</a>
+					<a href="?about=read">О сайте</a>
+					<a href="?call=admin">Обратная связь</a>
 			</div>
 		
 			<div class="logo-for-mobil clearfix">
@@ -61,34 +95,97 @@
 			
 			
 			<div class="vxod-for-mobil">
-					<p class="title-vxod-for-mobil">Вход на сайт</p>
+				<?php
+					if(!empty($_SESSION['userPdd'])) {
+						echo '<p class="nik-for-mobil">'.$_SESSION['userPdd'].'</p>';
+						
+						echo '
+							<div class="top-menu-avatar-menu mobil-user-menu clearfix">
+						<div class="top-menu-ava top-menu-ava-mobil">
+							<img src="'.$_SESSION['avatar'].'">
+						</div>
+										
+						<div class="top-menu-menu top-menu-menu2">
+							<a class="open-submenu-user2" href="#"><img src="img/burger.png"></a>
+						</div>
+						<div class="submenu-user2">
+							<ul>
+								<li><a href="?action=edit-user-profil&token='.$_SESSION['token'].'">Профиль</a></li>
+								<li><a href="?action=add-question&token='.$_SESSION['token'].'">Добавить вопрос</a></li>
+								<li><a href="?my-questions='.$_SESSION['userPdd'].'">Мои вопросы</a></li>
+								<li><a href="?my-bookmark='.$_SESSION['userPdd'].'">Мои закладки</a></li>
+								<li><a class="exit-user" href="?action=exit&token=<'.$_SESSION['token'].'">Выход</a></li>
+							</ul>
+						</div>
+							
+					</div>				
+						';
+					}
+					else {
+						echo '<p class="title-vxod-for-mobil">Вход на сайт</p>';
+					}
+				?>
 					
-				
-				</div>
-				
-			
-		
-			
-		</div>
-		
-			<div class="inner-header">
-				<div class="logo clearfix">
-				<a href="#"><img src="img/logo.png" width="100%" height="100%" alt="Логотип"></a>
-				</div>
-				<div class="discription">
-					<p>ПДД в моём городе</p>
-					<p>Научи ездить по правилам</p>
-				</div>
-				<a href="#" class="btn-chooce">Выбери свой город</a>
-				
-				
 			</div>
+	
+
+				</div>
+		</div>
+			
+			<?php
+				if(!empty($_GET['action'])) {
+					if($_GET['action'] == 'add-question' || $_GET['action'] == 'edit-user-profil') {
+						echo '
+							<div class="inner-header inner-header2">
+								<div class="discription discription2">
+									<p>Тренажер ПДД</p>
+									<p>На дорогах твоего города</p>
+								</div>
+							</div>
+						';
+					}
+					
+					else {
+						echo '
+							<div class="inner-header">
+								<div class="logo clearfix">
+								<a href="#"><img src="img/logo.png" width="100%" height="100%" alt="Логотип"></a>
+								</div>
+								<div class="discription">
+									<p>Тренажер ПДД</p>
+									<p>На дорогах твоего города</p>
+								</div>
+								<a href="?choose-city=yes" class="btn-chooce">Выбери свой город</a>
+							</div>
+						';
+					}
+					
+				}
+				
+				else {
+						echo '
+							<div class="inner-header">
+								<div class="logo clearfix">
+								<a href="#"><img src="img/logo.png" width="100%" height="100%" alt="Логотип"></a>
+								</div>
+								<div class="discription">
+									<p>Тренажер ПДД</p>
+									<p>На дорогах твоего города</p>
+								</div>
+								<a href="?choose-city=yes" class="btn-chooce">Выбери свой город</a>
+							</div>
+						';
+					}
+				
+			?>
+			
+			
 			<div class="wraper-top-nav">
 				<div class="top-menu clearfix">
 					<a href="/">Главная</a>
-					<a href="#">Город</a>
-					<a href="#">О сайте</a>
-					<a href="#">Обратная связь</a>
+					<a href="?choose-city=yes">Город</a>
+					<a href="?about=read">О сайте</a>
+					<a href="?call=admin">Обратная связь</a>
 					
 					
 					
@@ -116,93 +213,25 @@
 							
 				if(!empty($_GET['action'])) {
 					if($_GET['action'] === 'registr') {
-						require_once 'registr.php';			
+						require 'registr.php';			
 					}
 				}
 						
 			?>
 				
-				<div class="last-comment clearfix">
-					<p class="title-vxod">Последние комментарии</p>
-					<div class="for-ramki clearfix">
-					
-						<div class="com">
-							<div class="ava-and-name-and-data-and-rep clearfix">
-								<div class="ava">
-									<img src="img/ava.jpg" width="80">
-								</div>
-								<div class="name-and-data-and-rep">
-									<div class="name-and-data">
-										<div class="name-comment"><a href="#">oleg_ra</a></div>
-										<div class="data-comment">22.02.2017</div>
-									</div>
-									<div class="name-rep">Репутация: 10</div>
-								</div>
-							</div>
-							<div class="description-comment clearfix">
-								<p>
-									Тут сложная ситуация, не каждый
-									сотрудник ГАИ даже сразу сможет
-									разобраться
-								</p>
-								<a href="#">перейти к комментарию</a>
-							</div>
-						</div>
-						
-						<div class="com">
-							<div class="ava-and-name-and-data-and-rep clearfix">
-								<div class="ava">
-									<img src="img/ava2.jpg" width="80">
-								</div>
-								<div class="name-and-data-and-rep">
-									<div class="name-and-data">
-										<div class="name-comment"><a href="#">oleg_ra</a></div>
-										<div class="data-comment">22.02.2017</div>
-									</div>
-									<div class="name-rep">Репутация: 10</div>
-								</div>
-							</div>
-							<div class="description-comment clearfix">
-								<p>
-									Вообще непонятно кто в такой вот
-									ситуации прав, а кто виноват.
-									Я лично с инструктором, когда ...
-								</p>
-								<a href="#">перейти к комментарию</a>
-							</div>
-						</div>
-						</div>
+					<div class="last-comment clearfix">
+						<?php
+							require_once 'last-comment.php';
+						?>
 					</div>
 				</div>
 		
 			
-				<!--
-					<div class="main-page">
-						<a href="./">Главная страница</a>
-					</div>
-					<div class="select-city">
-						<a href="?choose-city=yes">Выбрать город</a>
-					</div>
-					<div class="about">
-						<a href="?about=read">О сайте</a>
-					</div>
-					<br>
-					<br>
-					<div class="about">
-						<a href="?call=admin">Связаться с администрацией</a>
-					</div>
-				-->
 				<div class="questions">
 					<?php
 					
 						if(!empty($_GET['author-question'])) {
 							require_once 'show-user-profil.php';
-							
-							$userName = explode('.', $_GET['author-question'])[0];
-							$userId = explode('.', $_GET['author-question'])[1];
-							setcookie ('userName', $userName, time()+6048);
-							setcookie ('userId', $userId, time()+6048);
-							
 						}
 						
 						elseif(!empty($_GET['show-question-user'])) {
@@ -261,31 +290,23 @@
 						elseif(!empty($_GET['my-bookmark'])) {
 							require_once 'my-bookmark.php';
 						}
-						
-						
+							
 					?>
-					
-					
 					
 				</div>
 				
-				
-			
-			
-			
-			
 		</section>
 		
-		<footer>
+		<footer style="position: relative;">
 			<div class="inner-footer">
 			
 				<a class="logo-footer" href="#"><img src="img/logo.png" width="100%" height="100%" alt="Логотип"></a>
 				
 				<div class="bottom-menu">
-					<a href="#">Главная</a>
-					<a href="#">Город</a>
-					<a href="#">О сайте</a>
-					<a href="#">Обратная связь</a>
+					<a href="/">Главная</a>
+					<a href="?choose-city=yes">Город</a>
+					<a href="?about=read">О сайте</a>
+					<a href="?call=admin">Обратная связь</a>
 				</div>
 				
 				<p class="each">Каждому своя дорога</p>
@@ -293,8 +314,22 @@
 				
 				<p class="each2">Каждому своя дорога</p>
 			</div>
+			
+			<!--LiveInternet counter--><script type="text/javascript">
+			document.write("<a style='position: absolute; bottom: 0; left: 5%' class='liveinet' href='//www.liveinternet.ru/click' "+
+			"target=_blank><img src='//counter.yadro.ru/hit?t11.6;r"+
+			escape(document.referrer)+((typeof(screen)=="undefined")?"":
+			";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+			screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+			";"+Math.random()+
+			"' alt='' title='LiveInternet: показано число просмотров за 24"+
+			" часа, посетителей за 24 часа и за сегодня' "+
+			"border='0' width='88' height='31'><\/a>")
+			</script><!--/LiveInternet-->
 		</footer>
 		
 		<script src="script.js"></script>
+		
+		
 	</body> 
 </html>

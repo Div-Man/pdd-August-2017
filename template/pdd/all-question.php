@@ -1,24 +1,5 @@
 <?php
 
-	
-	/*
-	foreach($allQuestions as $question) {
-		echo '<pre>';
-			print_r($question);
-		echo '</pre>';
-	}
-	*/
-	
-	/*
-	foreach($lastComment as $lastCom) {
-		echo '<pre>';
-			print_r($lastCom);
-		echo '</pre>';
-	}
-	*/
-	
-	
-	
 	$peremenayaForRadioName = 0;
 ?>
 
@@ -29,9 +10,7 @@
 					
 					<?php
 						foreach($allQuestions as $question) {
-						
-					
-							
+								
 							
 				echo '<div class="question">';
 				
@@ -72,7 +51,7 @@
 									echo '<span>Автор</span>';
 								echo '</div>';
 								echo '<div class="city-name">';
-									echo '<span class="city-for-mobil">Автор: </span><a href="?author-question='.$question['login'].'.'.$question['user_id'].'">' . $question['login'] . '</a>';
+									echo '<span class="city-for-mobil">Автор: </span><a class="author2" href="?author-question='.$question['login'].'.'.$question['user_id'].'">' . $question['login'] . '</a>';
 								echo '</div>';
 							echo '</div>';
 						
@@ -227,17 +206,12 @@
 							var idQuestion = forma.elements.questionId.value;
 							var answer = forma.elements.chooseAnswer.value;
 							
-							console.log(forma);
-							console.log(idQuestion);
-							console.log(answer);
-							
-							
 							xmlhttp=new XMLHttpRequest();
 							
 							xmlhttp.onreadystatechange=function() {
 								if (this.readyState==4 && this.status==200) {
 									if(answer=="") {
-										otvet[i].innerHTML = '<p>Выберите ответ</p>';
+										otvet[i].innerHTML = '<p class="choose-answer">Выберите ответ</p>';
 									}
 									else {
 										otvet[i].innerHTML=this.responseText;
@@ -256,9 +230,7 @@
 					
 					var addBookmark = document.querySelectorAll('.add-bookmark');
 					var btnBookmark = document.querySelectorAll('.btn-bookmark');
-					
-					console.log(addBookmark);
-					
+	
 					addBookmark.forEach(function(element2, j){
 						addBookmark[j].addEventListener('click', function(e) {
 							e.preventDefault();
@@ -266,10 +238,7 @@
 							var idUser = forma.elements.idUser.value;
 							var idQuestion = forma.elements.idQuestion.value;
 							
-						
 							xmlhttp=new XMLHttpRequest();
-							
-							console.log(idUser);
 							
 							xmlhttp.onreadystatechange=function() {
 								if (this.readyState==4 && this.status==200) {
@@ -291,8 +260,6 @@
 
 					var addBookmarkMobil = document.querySelectorAll('.add-bookmark-mobil');
 					var btnBookmark2 = document.querySelectorAll('.btn-bookmark2');
-					
-					console.log(addBookmarkMobil);
 					
 					addBookmarkMobil.forEach(function(element3, k){
 						addBookmarkMobil[k].addEventListener('click', function(ee) {
@@ -352,34 +319,34 @@
 						else {$nextpage = null;}
 
 						// Находим две ближайшие станицы с обоих краев, если они есть  
-						if($page - 4 > 0) $page4left = ' <a href= ./?page='. ($page - 4) .'>'. ($page - 4) .'</a> | ';  
+						if($page - 4 > 0) $page4left = ' <a href= ./?page='. ($page - 4) .'>'. ($page - 4) .'</a>';  
 						else {$page4left = null;}
 						
-						if($page - 3 > 0) $page3left = ' <a href= ./?page='. ($page - 3) .'>'. ($page - 3) .'</a> | ';  
+						if($page - 3 > 0) $page3left = ' <a href= ./?page='. ($page - 3) .'>'. ($page - 3) .'</a>';  
 						else {$page3left = null;}
 						
-						if($page - 2 > 0) $page2left = ' <a href= ./?page='. ($page - 2) .'>'. ($page - 2) .'</a> | ';  
+						if($page - 2 > 0) $page2left = ' <a href= ./?page='. ($page - 2) .'>'. ($page - 2) .'</a>';  
 						else {$page2left = null;}
 						
-						if($page - 1 > 0) $page1left = '<a href= ./?page='. ($page - 1) .'>'. ($page - 1) .'</a> | ';  
+						if($page - 1 > 0) $page1left = '<a href= ./?page='. ($page - 1) .'>'. ($page - 1) .'</a>';  
 						else {$page1left = null;}
 						
 						
-						if($page + 4 <= $total) $page4right = ' | <a href= ./?page='. ($page + 4) .'>'. ($page + 4) .'</a>'; 
+						if($page + 4 <= $total) $page4right = '<a href= ./?page='. ($page + 4) .'>'. ($page + 4) .'</a>'; 
 						else {$page4right = null;}
 						
-						if($page + 3 <= $total) $page3right = ' | <a href= ./?page='. ($page + 3) .'>'. ($page + 3) .'</a>'; 
+						if($page + 3 <= $total) $page3right = '<a href= ./?page='. ($page + 3) .'>'. ($page + 3) .'</a>'; 
 						else {$page3right = null;}
 						
-						if($page + 2 <= $total) $page2right = ' | <a href= ./?page='. ($page + 2) .'>'. ($page + 2) .'</a>'; 
+						if($page + 2 <= $total) $page2right = '<a href= ./?page='. ($page + 2) .'>'. ($page + 2) .'</a>'; 
 						else {$page2right = null;}
 						
-						if($page + 1 <= $total) $page1right = ' | <a href= ./?page='. ($page + 1) .'>'. ($page + 1) .'</a>'; 
+						if($page + 1 <= $total) $page1right = '<a href= ./?page='. ($page + 1) .'>'. ($page + 1) .'</a>'; 
 						else {$page1right = null;}
 						
 
 						// Вывод меню  
-						echo $pervpage.$page4left.$page3left.$page2left.$page1left.'<b class="page-green">'.$page.'</b>'.$page1right.$page2right.$page3right.$page4right.$nextpage;  
+						echo $pervpage.$page4left.$page3left.$page2left.$page1left.'<a class="pagActive" href="#">'.$page.'</a>'.$page1right.$page2right.$page3right.$page4right.$nextpage;  
 						
 					?>
 					

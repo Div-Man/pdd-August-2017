@@ -58,6 +58,10 @@ class QuestionController {
 		}
 		
 		if(!empty($_GET['comments'])) {
+		
+			$needCom = $this->model->commmmm((int)$_GET['comments']);
+			
+			
 			$comment = $this->model->userComments((int)$_GET['comments']);
 			$userComment = $this->model->showUserComments((int)$_GET['comments']);
 		}
@@ -143,15 +147,6 @@ class QuestionController {
 					if(!empty($chooseCity) && !empty($chooseStreet)) {
 						$this->model->addQuestionInCity($img, $question, $var1, $var2, $var3, $var4, $answer, $chooseCity, $chooseStreet);
 					}
-					else {
-						if(!empty($newCity) && !empty($newStreet)) {
-							$this->model->addQuestionCreateCity($img, $question, $var1, $var2, $var3, $var4, $answer, $newCity, $newStreet);
-						}
-						else {
-							die('<p>Выберите город и улицу</p>');
-						}
-						
-					}
 				}
 				
 				else {
@@ -166,9 +161,14 @@ class QuestionController {
 		
 	}
 	
-	function getAddUserComment($comment, $user, $idQuestion){
+	function newCity($city, $street) {
+		$this->model->createNewCity($city, $street);
+	}
+	
+	
+	function getAddUserComment($comment, $user, $idQuestion, $ip){
 		if(!empty($comment)) {
-			$this->model->addUserComment($comment, $user, $idQuestion);
+			$this->model->addUserComment($comment, $user, $idQuestion, $ip);
 		}
 		
 		else {

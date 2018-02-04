@@ -43,20 +43,27 @@ class User {
 		}
 	
 		else {
-			$newUser = "INSERT INTO users(login, password, email, folder, avatar, data_reg) VALUES(:login, :password, :email, './userFile/".$newLogin3."/', './defailt-ava.jpg', '".$date3."')";
-			$newUserPrepare = $this->db->prepare($newUser);
-			$newUserPrepare->bindValue(':login', trim($newLogin3), PDO::PARAM_STR);
-			$newUserPrepare->bindValue(':password', trim($pass), PDO::PARAM_STR);
-			$newUserPrepare->bindValue(':email', trim($input_email), PDO::PARAM_STR);
-			$newUserPrepare->execute();
-			
-			echo '<p>Регистрация завершена, ваш логин: '.$newLogin3.'</p>';
-			echo '<p><a href="?index">Перейти на главную страницу сайта</a></p>';
 			
 			try {
-				if(!$userPath = @mkdir('/userFile/'.$newLogin3.'/avatar/', 0700, true)) {
+				if(!$userPath = @mkdir('./userFile/'.$newLogin3.'/avatar/', 0700, true)) {
 					throw new Exception('Ошибка.');
 				}
+				$newUser = "INSERT INTO users(login, password, email, folder, avatar, data_reg) VALUES(:login, :password, :email, './userFile/".$newLogin3."/', './ava.png', '".$date3."')";
+				$newUserPrepare = $this->db->prepare($newUser);
+				$newUserPrepare->bindValue(':login', trim($newLogin3), PDO::PARAM_STR);
+				$newUserPrepare->bindValue(':password', trim($pass), PDO::PARAM_STR);
+				$newUserPrepare->bindValue(':email', trim($input_email), PDO::PARAM_STR);
+				$newUserPrepare->execute();
+				
+				echo '<p>Регистрация завершена.</p>';
+				echo '<p>Ваш логин: '.$newLogin3.'.</p>';
+				echo '<p>Ваш e-mail: '.$input_email.'.</p>';
+				echo '<p>Ваш пароль: '.$password.'.</p>';
+				
+				echo '<p>Запишите куда-нибудь, эти данные.</p>';
+			
+				echo '<p><a href="?index">Перейти на главную страницу сайта</a></p>';
+				
 			} 
 			catch (Exception $e) {
 				die('<p>Произошла ошибка, при создании вашей папки, повторите попытку или сообщите администратору.</p>');
@@ -216,9 +223,6 @@ class User {
 			$userImg = "./userFile/".$_SESSION['userPdd']. "/avatar/" . basename($img['name']);
 							
 			if(move_uploaded_file($img['tmp_name'], $userImg)) {
-				echo '<p>Файл успешно загружен</p>';
-				echo $img['name'];
-				
 				$sql = "UPDATE users SET `avatar` = :ava, `link_vk` = :vk WHERE id = '".$userId."'";
 				$updateAva = $this->db->prepare($sql);
 				$updateAva->bindValue(':ava', trim($userImg), PDO::PARAM_STR);

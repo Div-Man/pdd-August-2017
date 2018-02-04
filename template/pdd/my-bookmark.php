@@ -7,63 +7,173 @@ foreach($allQuestions as $question) {
 	}
 	*/
 	
-		foreach($allQuestions as $question) {
-							$qData = explode(" ", $question['date']);
-							$arr = explode("-", $qData[0]);
-							$rusData = $arr[2].'-'.$arr[1].'-'.$arr[0];
-							$rusData;
-							echo '<div class="main-question clearfix">';
-								echo '<div class="question">';
-									echo '<div class="city-street">';
-										echo '<p>'.htmlspecialchars($question['city_name'],ENT_QUOTES).', улица '.htmlspecialchars($question['street_name'], ENT_QUOTES).'</p>';
-									echo '</div>';
-									echo '<div class="question-img">';
-										echo '<img width="600" src="'.$question['img'].'" class="question-img">';
-									echo '</div>';
+	$peremenayaForRadioName = 0;
+	
+echo '<p class="new-questions">Мои закладки</p>';
+					
+		foreach($allQuestions as $question) {		
+				echo '<div class="question">';
+				
+					echo '<div class="top-infa clearfix">';
+					
+						echo '<div class="wrapper-city clearfix">';
+							echo '<div class="city">';
+								echo '<div class="city-ico-name">';
+									echo '<img src="img/city.png">';
 									
-									echo '<div class="question-title"><p>';
-										echo htmlspecialchars($question['question_name'],ENT_QUOTES);
-									echo '</p></div>';
+									echo '<span>Город</span>';
+								echo '</div>';
+								echo '<div class="city-name">';
+									echo '<span class="city-for-mobil">Г. </span>'. htmlspecialchars($question['city_name'],ENT_QUOTES);
+								echo '</div>';
+							echo '</div>';
+						
+							echo '<div class="city">';
+								echo '<div class="city-ico-name">';
+									echo '<img src="img/street.png">';
 									
-									echo '<div class="answers">';
-										echo '<form method="POST">';
-											echo '<label><input type="radio" name="chooseAnswer" value="1">'.htmlspecialchars($question['variant1'],ENT_QUOTES).'</label><br>';
-											echo '<label><input type="radio" name="chooseAnswer" value="2">'.htmlspecialchars($question['variant2'],ENT_QUOTES).'</label><br>';
-											if(!empty($question['variant3'])) {
-												echo '<label><input type="radio" name="chooseAnswer" value="3">'.htmlspecialchars($question['variant3'],ENT_QUOTES).'</label><br>';
-											}
-											if(!empty($question['variant4'])) {
-												echo '<label><input type="radio" name="chooseAnswer" value="4">'.htmlspecialchars($question['variant4'],ENT_QUOTES).'</label><br>';
-											}
-											echo '<button class="ans">Проверить</button>';
-											echo '<input type="hidden" value="'.htmlspecialchars($question['id'],ENT_QUOTES).'" name="questionId">';
-										echo '</form>';
-									echo '</div>';
+									echo '<span>Улица</span>';
+								echo '</div>';
+								echo '<div class="city-name">';
+									echo '<span class="city-for-mobil">Ул. </span>'.htmlspecialchars($question['street_name'], ENT_QUOTES);
+								echo '</div>';
+							echo '</div>';
+						echo '</div>';
+						
+						
+						
+						
+						echo '<div class="wrapper-city clearfix">';
+							echo '<div class="city">';
+								echo '<div class="city-ico-name">';
+									echo '<img src="img/author.png">';
 									
-									echo '<div class="txtHint"></div>';
+									echo '<span>Автор</span>';
+								echo '</div>';
+								echo '<div class="city-name">';
+									echo '<span class="city-for-mobil">Автор: </span><a class="author2" href="?author-question='.$question['login'].'.'.$question['user_id'].'">' . $question['login'] . '</a>';
+								echo '</div>';
+							echo '</div>';
+						
+							echo '<div class="city">';
+								echo '<div class="city-ico-name">';
+									echo '<img src="img/data.png">';
 									
-									echo '<div class="question-footer">';
-										echo '<a href="?comments='.$question['id'].'">Перейти к коментариям ('.$question['countComment'].')</a>';
-										echo '<form method="post" class="delete-bookmark">
+									echo '<span>Дата</span>';
+								echo '</div>';
+								echo '<div class="city-name">';
+									echo '<span class="city-for-mobil">от </span>'.$question['date'];
+								echo '</div>';
+							echo '</div>';
+						echo '</div>';
+						
+					echo '</div>';
+				
+					
+					echo '<div class="img-and-variantbi clearfix">';
+				
+						echo '<div class="question-img">';
+							echo '<img width="100%" height="100%" src="'.$question['img'].'">';
+						echo '</div>';
+					
+						
+						echo '<div class="wrapper-for-com-mobil clearfix">';
+						
+							echo '<div class="comments">';
+								echo '<a href="?comments='.$question['id'].'">'.$question['countComment'].' комментариев </a>';
+							echo '</div>';
+							
+							
+						echo '</div>';
+					
+						echo '<div class="question-for-img">';
+							echo '<p class="question-title">';
+								echo htmlspecialchars($question['question_name'],ENT_QUOTES);
+							echo '</p>';
+							echo '<form method="post">';
+								echo '<ul class="clearfix radio-answer">';
+								
+								
+								
+									echo '<li>';
+										echo '<input type="radio" id="etic'.$peremenayaForRadioName.'" name="chooseAnswer" value="1">';
+										echo '<label for="etic'.$peremenayaForRadioName.'">'.htmlspecialchars($question['variant1'],ENT_QUOTES).'</label>';
+										echo '<div class="check"></div>';
+									echo '</li>';
+									
+									
+									
+									echo '<li>';
+										echo '<input type="radio" id="kik'.$peremenayaForRadioName.'" name="chooseAnswer" value="2">';
+										echo '<label for="kik'.$peremenayaForRadioName.'">'. htmlspecialchars($question['variant2'],ENT_QUOTES) .'</label>';
+										echo '<div class="check"><div class="inside"></div></div>';
+									echo '</li>';
+									
+									
+
+									if(!empty($question['variant3'])) {
+										echo '<li>';
+											echo '<input type="radio" id="kuim'.$peremenayaForRadioName.'" name="chooseAnswer" value="3">';
+											echo '<label for="kuim'.$peremenayaForRadioName.'">'.htmlspecialchars($question['variant3'],ENT_QUOTES).'</label>';
+											echo '<div class="check"><div class="inside"></div></div>';
+									echo '</li>';
+									}
+									
+									
+									if(!empty($question['variant4'])) {
+												
+										echo '<li>';
+											echo '<input type="radio" id="nel'.$peremenayaForRadioName.'" name="chooseAnswer" value="4">';
+											echo '<label for="nel'.$peremenayaForRadioName.'">'.htmlspecialchars($question['variant4'],ENT_QUOTES).'</label>';
+											echo '<div class="check"><div class="inside"></div></div>';
+										echo '</li>';
+												
+									}
+									
+								echo '</ul>';
+								
+								echo '<input type="submit" value="Проверить" class="ans btnAnswer">';
+								echo '<input type="hidden" value="'.htmlspecialchars($question['id'],ENT_QUOTES).'" name="questionId">';
+								echo '<div class="txtHint"></div>';
+							echo '</form>';
+							
+							echo '<form method="post" class="delete-bookmark2">
 												<input type="hidden" value="'.$_SESSION['id'].'" name="idUser">';
 										
-												echo '
+											echo '
 											<input type="hidden" value="'.$question['id'].'" name="idQuestion">
-											<span class="btn-bookmark">Удалить из закладок</span>
+											<input class="btn-del-bookmark" type="submit" value="Удалить из закладок">
 										</form>';
-										
-									echo '</div>';
+							
+							echo '<div class="wrapper-for-com">';
+								echo '<div class="comments">';
+									echo '<a href="?comments='.$question['id'].'">'.$question['countComment'].' комментариев </a>';
+								echo '</div>';
+								
+								echo '<div class="bookmark">';
+								
 
+									echo '<form method="post" class="delete-bookmark">
+												<input type="hidden" value="'.$_SESSION['id'].'" name="idUser">';
+										
+											echo '
+											<input type="hidden" value="'.$question['id'].'" name="idQuestion">
+											<input class="btn-del-bookmark" type="submit" value="Удалить из закладок">
+										</form>';
+									
 								echo '</div>';
-								
-								echo '<div class="author-data">';
-									echo '<p>Дата ' . $rusData . '</p>';
-									echo '<p>Автор <a href="?author-question">' . $question['login'] . '</a></p>';
-								echo '</div>';
-								
-								
-								
 							echo '</div>';
+							
+						echo '</div>';
+						
+					echo '</div>';
+				echo '</div>';
+							
+							
+							
+							/////////////////////////////////
+							$peremenayaForRadioName++;
+							
 					}
 ?>
 
@@ -100,18 +210,22 @@ var ans = document.querySelectorAll('.ans');
 					
 					})
 
+					
+					
 
 
-	var deleteBookmark = document.querySelectorAll('.delete-bookmark');
+	var deleteBookmark = document.querySelectorAll('.btn-del-bookmark');
 	var btnBookmark = document.querySelectorAll('.btn-bookmark');
 					
 	deleteBookmark.forEach(function(element3, k){
 		deleteBookmark[k].addEventListener('click', function(e) {
 			e.preventDefault();
 			var forma = e.target.parentElement;
+			
+			
 			var idUser = forma.elements.idUser.value;
 			var idQuestion = forma.elements.idQuestion.value;
-			var delElement = forma.closest('.main-question');
+			var delElement = forma.closest('.question');
 			
 			xmlhttp=new XMLHttpRequest();
 							
@@ -124,7 +238,7 @@ var ans = document.querySelectorAll('.ans');
 			xmlhttp.open("POST","./",true);
 			xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 			xmlhttp.send("u="+idUser+"&q="+idQuestion);
-							
+					
 		})				
 	})
 </script>
